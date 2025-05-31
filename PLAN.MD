@@ -45,25 +45,28 @@ Estado Actual: El proyecto ya está completamente configurado y funcionando. A c
 
 **Database Schema Implementation (Mejor de lo Planificado):**
 - ✅ **profiles table** - Implementada con estructura completa:
-  - Campos: id, email, full_name, avatar_url, role, timestamps
+  - Campos: id (string), email (string), full_name (string | null), avatar_url (string | null), role (UserRole), created_at, updated_at
   - Enum user_role: 'comprador', 'vendedora', 'admin'
   - RLS policies configuradas
   
 - ✅ **encargos table** - Implementada y mejorada:
-  - Campos: id, comprador_id, product_name, product_url, quantity, description, estimated_price, image_url, category, status, timestamps
-  - Enum encargo_status con 12 estados del flujo completo
+  - Campos: id (string), comprador_id (string), product_name (string), product_url (string | null), quantity (number), description (string | null), estimated_price (string | null), image_url (string | null), category (string | null), status (EncargoStatus), created_at, updated_at
+  - Enum encargo_status con 12 estados del flujo completo: 'pendiente_cotizacion', 'cotizacion_recibida', 'esperando_pago_deposito', 'deposito_pagado', 'en_proceso_compra_usa', 'en_camino_argentina', 'listo_para_entrega_final', 'esperando_pago_final', 'completado', 'cancelado_comprador', 'cancelado_vendedor', 'cancelado_admin'
   - RLS policies para compradores y vendedoras
   - Índices optimizados
+  - Relación: comprador (Profile)
   
 - ✅ **cotizaciones table** - Implementada:
-  - Campos: id, encargo_id, vendedora_id, precios, comisiones, tiempo estimado, comentarios, status
+  - Campos: id (string), encargo_id (string), vendedora_id (string), precio_producto_usd (number), comision_importacion (number), precio_total_ars (number), deposito_requerido_ars (number), tiempo_estimado_dias (number), comentarios (string | null), status, created_at, updated_at
   - Enum cotizacion_status: 'pendiente', 'aceptada', 'rechazada', 'expirada'
   - RLS policies configuradas
+  - Relaciones: encargo (Encargo), vendedora (Profile)
   
 - ✅ **auto_pedidos table** - Implementada:
-  - Campos: id, vendedora_id, product_name, precios USD/ARS, description, status
+  - Campos: id (string), vendedora_id (string), product_name (string), product_url (string | null), quantity (number), precio_producto_usd (number), precio_venta_ars (number), description (string | null), image_url (string | null), category (string | null), status, created_at, updated_at
   - Enum auto_pedido_status: 'disponible', 'reservado', 'vendido', 'cancelado'
   - RLS policies configuradas
+  - Relación: vendedora (Profile)
 
 **Mejoras Adicionales Implementadas:**
 - ✅ **Triggers automáticos** para updated_at en todas las tablas
